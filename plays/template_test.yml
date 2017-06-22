@@ -1,0 +1,16 @@
+---
+- hosts: linux
+  vars:
+    my_var:
+      test1:
+        var1: foo
+        var2: bar
+      test2:
+        var1: what
+        var2: ever
+  tasks:
+  - name: templates
+    template:
+      src: ../templates/test.j2
+      dest: /tmp/{{ item.key }}.conf
+    with_dict: "{{ my_var }}"

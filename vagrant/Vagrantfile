@@ -1,0 +1,80 @@
+$win_agents=2
+$linux_agents=2
+$agent_gui=false
+$agent_memory='1024'
+$agent_cpus='1'
+
+
+Vagrant.configure(2) do |config|
+
+  # Global Configuration
+  config.vm.box = "bento/centos-7.2"
+
+  # hostmanager configuration
+  # Plugin needed
+  # vagrant plugin install vagrant-hostmanager
+  #config.hostmanager.enabled = true
+  #config.hostmanager.manage_guest = true
+
+  # Ansible Server Configuration
+  config.vm.define "ansible" do |ansible_config|
+
+    ansible_config.vm.host_name = "ansible.localvm"
+
+    ansible_config.vm.provider "virtualbox" do |vb|
+      vb.gui = false
+      vb.name = 'ansible'
+      vb.cpus = '2'
+      vb.memory = '2048'
+    end
+
+    ansible_config.vm.network "private_network", ip: "192.168.58.10"
+
+    ansible_config.vm.provision :shell, :path => './scripts/ansible_install.sh'
+    
+    config.vm.synced_folder '.', "/vagrant", disabled: true
+    config.vm.synced_folder '..', "/vagrant"
+
+  end #End MoM Configuration
+
+  
+  # Create Windows Agents
+  (1..$win_agents).each do |i|
+    config.vm.define vm_name = "win-agent%02d" % i do |config|
+      config.vm.box = "opentable/win-2012r2-standard-amd64-nocm"
+
+      config.vm.hostname = "#{vm_name}"
+
+      config.vm.provider "virtualbox" do |vb|
+        vb.gui = $agent_gui
+        vb.name = vm_name
+        vb.memory = $agent_memory
+        vb.cpus = $agent_cpus
+      end
+      
+      ip = "192.168.58.#{i+100}"
+      config.vm.network :private_network, ip: ip
+
+    end
+  end # End Agents' Configuration
+  
+  # Create Linux Agents
+  (1..$linux_agents).each do |i|
+    config.vm.define vm_name = "linux-agent%02d" % i do |config|
+      config.vm.box = "bento/centos-7.2"
+
+      config.vm.hostname = "#{vm_name}"
+
+      config.vm.provider "virtualbox" do |vb|
+        vb.gui = $agent_gui
+        vb.name = vm_name
+        vb.memory = $agent_memory
+        vb.cpus = $agent_cpus
+      end
+      
+      ip = "192.168.58.#{i+200}"
+      config.vm.network :private_network, ip: ip
+
+    end
+  end # End Agents' Configuration
+end

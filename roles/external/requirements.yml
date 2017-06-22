@@ -1,0 +1,4 @@
+---
+- src: https://github.com/as0bu/Ansible-RHEL7-CIS-Benchmarks
+  version: master
+  name: rhel7_cis_benchmarks

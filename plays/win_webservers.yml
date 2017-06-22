@@ -1,0 +1,7 @@
+---
+
+- name: win_webservers.yml
+  hosts: win_webservers
+
+  roles:
+    - { role: iis_example, tags: ["iis"] }
