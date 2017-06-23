@@ -1,7 +1,8 @@
 ---
 - hosts: 192.168.58.201
   vars:
-    jenkins_plugins: [git]
+    jenkins_plugins: [git, pipeline]
+
   pre_tasks:
   - name: Set the java_packages variable (RedHat).
     set_fact:
@@ -12,10 +13,12 @@
     yum:
       name: git
       state: present
+
   roles:
     - bobbyrenwick.pip
     - geerlingguy.jenkins
     - dochang.docker
+
   post_tasks:
   - name: "Allow Jenkins user to sudo w/o password"
     copy:
