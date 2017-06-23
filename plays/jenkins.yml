@@ -1,0 +1,26 @@
+---
+- hosts: 192.168.58.201
+  vars:
+    jenkins_plugins: [git]
+  pre_tasks:
+  - name: Set the java_packages variable (RedHat).
+    set_fact:
+      java_packages:
+        - java-1.8.0-openjdk
+    when: ansible_os_family == 'RedHat'
+  - name: Install Git
+    yum:
+      name: git
+      state: present
+  roles:
+    - bobbyrenwick.pip
+    - geerlingguy.jenkins
+    - dochang.docker
+  post_tasks:
+  - name: "Allow Jenkins user to sudo w/o password"
+    copy:
+      dest: /etc/sudoers.d/jenkins
+      content: '%jenkins ALL=(ALL) NOPASSWD: ALL'
+      owner: root
+      group: root
+      mode: 0440
