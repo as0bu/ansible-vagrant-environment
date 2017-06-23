@@ -1,0 +1,12 @@
+---
+- hosts: 192.168.58.201
+  tasks:
+  - name: "Install package emacs"
+    yum:
+      name: emacs
+      state: present
+    register: yum_install
+  - name: "Debug yum_install"
+    debug:
+      var: yum_install
+      verbosity: 2
