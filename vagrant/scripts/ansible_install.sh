@@ -1,7 +1,7 @@
 #!/bin/bash
 
 yum install -y epel-release
-yum install -y ansible python-pip
+yum install -y ansible python-pip git tree
 
 pip install --upgrade pip "pywinrm>=0.2.2"
 
